@@ -1,12 +1,12 @@
 """
 Journey to the West: Complete Game Generator
 Includes:
-- Colossal Buddha Boss (Huge 340px sprite, telegraphed AoE palms with dodge windows)
-- Buddha Approval Cutscene at near-zero HP (Cannot drop to 0, triggers sacred blessing & passage to Chamber 151)
-- Buff heavily-armored Erlang Shen with Trident Spear & independent fighting Xiao Tian Quan
-- Lu Ban in-game interactive avatar character with forge anvil
-- 4-Directional movement & attacks for Wukong, all Enemies, and Bosses
-- God-colored dynamic weapon VFX
+- Robust Physics & Arena Boundary Containment (ZERO flying off-screen, smooth knockback damping)
+- Projection-segmented zero-bleed sprite sheets
+- Fixed clean IDLE stances for all characters (Wukong, Enemies, Bosses, Dogs)
+- Colossal Buddha Boss with Dodge Windows & Approval Cutscene
+- Buff Erlang Shen with 3-Pointed Trident Spear & Independent Xiao Tian Quan Hound
+- Lu Ban in-game interactive avatar with forge anvil
 """
 
 import os
@@ -18,15 +18,9 @@ BRAIN_DIR = r"C:\Users\chung\.gemini\antigravity\brain\36a6f007-4ecb-43da-999f-0
 OUTPUT_DIR = "assets_webp"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Build all assets
-import build_all_gods_and_4dir
-build_all_gods_and_4dir.build_all()
-
-import process_erlang_and_luban
-process_erlang_and_luban.process_all()
-
-import process_giant_buddha
-process_giant_buddha.process_buddha()
+# Build all cleanly segmented sheets
+import package_all_clean_sheets
+package_all_clean_sheets.package_all()
 
 assets_keys = [
     'hero', 'seamless_floor', 'all_10_gods', 'monsters_beasts',
@@ -696,208 +690,6 @@ html_template = """<!DOCTYPE html>
       border-color: #fff;
     }
 
-    .gameover-box {
-      text-align: center;
-      max-width: 620px;
-    }
-
-    .gameover-title {
-      font-family: var(--font-chinese);
-      font-size: 38px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      margin-bottom: 10px;
-    }
-
-    .gameover-title.victory {
-      color: #facc15;
-      text-shadow: 0 0 20px rgba(250, 204, 21, 0.8);
-    }
-
-    .gameover-title.defeat {
-      color: #ef4444;
-      text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
-    }
-
-    .stats-summary {
-      background: rgba(14, 10, 20, 0.8);
-      border: 1px solid var(--gold-dark);
-      border-radius: 8px;
-      padding: 16px;
-      width: 100%;
-      margin: 16px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-family: var(--font-chinese);
-      font-size: 15px;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      color: #cbd5e1;
-    }
-
-    .stat-val {
-      color: var(--gold-light);
-      font-weight: 700;
-    }
-  </style>
-</head>
-<body>
-  <div id="game-container">
-    <canvas id="gameCanvas"></canvas>
-
-    <div id="ui-layer">
-      <div class="top-hud">
-        <div class="player-bars">
-          <div class="hero-tag">
-            <span class="hero-name">齐天大圣 · 孙悟空</span>
-            <span class="hero-title" id="weapon-style-title">如意金箍棒 · 一万三千五百斤</span>
-          </div>
-          <div class="bar-wrapper">
-            <div id="hp-bar" class="bar-fill health" style="width: 100%;"></div>
-            <div class="bar-text"><span>气血值 (生命)</span><span id="hp-text">100 / 100</span></div>
-          </div>
-          <div class="bar-wrapper">
-            <div id="qi-bar" class="bar-fill qi" style="width: 100%;"></div>
-            <div class="bar-text"><span>混元真气 (法力)</span><span id="qi-text">50 / 50</span></div>
-          </div>
-          <div class="bar-wrapper" style="height: 16px;">
-            <div id="awaken-bar" class="bar-fill awakening" style="width: 0%;"></div>
-            <div class="bar-text" style="font-size: 10px;"><span>大闹天宫觉醒</span><span id="awaken-text">蓄力中: 按 [R/F] 施展</span></div>
-          </div>
-        </div>
-
-        <div class="top-center-hud">
-          <div id="chamber-name" class="chamber-title">花果山水帘洞与盘丝岭 · 第 1 重天 / 180 重天</div>
-          <div id="chamber-sub" class="chamber-subtitle">仙石初辟悟大道 · 降妖除魔登九霄</div>
-          <div id="chamber-clear-alert" class="banner-clear-alert">✨ 降妖功德圆满！请走向四周通天阵门进入下一重天 ✨</div>
-        </div>
-
-        <div class="currency-panel">
-          <div class="currency-item gold">
-            <span>🪙 灵石:</span>
-            <span id="gold-val">0</span>
-          </div>
-          <div class="currency-item ashes">
-            <span>✨ 功德:</span>
-            <span id="ashes-val">0</span>
-          </div>
-          <div class="currency-item peaches">
-            <span>🍑 蟠桃:</span>
-            <span id="peaches-val">0</span>
-          </div>
-          <div class="currency-item lives">
-            <span>❤️ 金身:</span>
-            <span id="lives-val">1</span>
-          </div>
-        </div>
-      </div>
-
-      <div id="boss-hud" class="boss-bar-container">
-        <div id="boss-name-text" class="boss-name">大日雷音寺·大日如来佛祖 (如来神掌)</div>
-        <div class="boss-bar-wrapper">
-          <div id="boss-bar-fill" class="boss-bar-fill" style="width: 100%;"></div>
-        </div>
-      </div>
-
-      <div class="bottom-hud">
-        <div class="action-slots">
-          <div class="action-slot active" id="slot-attack">
-            <div class="key-badge">左键/连招</div>
-            <div class="slot-label">金箍三连击</div>
-            <div class="slot-boon" id="boon-tag-attack">神针横扫</div>
-          </div>
-          <div class="action-slot" id="slot-special">
-            <div class="key-badge">右键/Q/特殊</div>
-            <div class="slot-label">定海神柱</div>
-            <div class="slot-boon" id="boon-tag-special">重岳劈地</div>
-          </div>
-          <div class="action-slot" id="slot-cast">
-            <div class="key-badge">E/法术</div>
-            <div class="slot-label">定身神咒</div>
-            <div class="slot-boon" id="boon-tag-cast">八卦法阵</div>
-          </div>
-          <div class="action-slot" id="slot-dash">
-            <div class="key-badge">空格/闪避</div>
-            <div class="slot-label">筋斗云遁</div>
-            <div class="slot-boon" id="boon-tag-dash">浮光掠影</div>
-          </div>
-          <div class="action-slot" id="slot-hex">
-            <div class="key-badge">R/F/觉醒</div>
-            <div class="slot-label">法天象地</div>
-            <div class="slot-boon" id="boon-tag-hex">齐天狂暴</div>
-          </div>
-        </div>
-
-        <div class="quick-buttons">
-          <button class="btn-hud" onclick="openAltarOfTransformations()">📜 七十二变神通谱</button>
-          <button class="btn-hud" onclick="openSkillCodex()">📖 西游万神伏魔录</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="boon-modal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <div id="god-portrait" class="modal-god-portrait"></div>
-          <div id="god-name" class="modal-title">二郎显圣真君·杨戬</div>
-          <div id="god-title" class="modal-subtitle">天眼洞察 · 执掌九天刑罚神律</div>
-          <div id="god-quote" class="modal-quote">“泼猴，接本君三尖两刃枪之威！荡尽三界妖邪，休得阻碍西行正道！”</div>
-        </div>
-        <div id="boon-choices-container" class="boon-cards-grid"></div>
-      </div>
-    </div>
-
-    <div id="pom-modal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <div id="peach-modal-icon" style="width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--peach-pink); box-shadow: 0 0 24px rgba(251, 113, 133, 0.8); margin: 0 auto 12px; background-size: 200%; background-position: 0 0;"></div>
-          <div class="modal-title" style="color: var(--peach-pink);">王母天庭蟠桃盛宴 (仙桃延寿)</div>
-          <div class="modal-subtitle">三千年一熟，人吃了体健身轻，道法大进</div>
-          <div class="modal-quote">“服食一枚仙桃，顿增三千年道行功力！请选择一项已修习的神通提升品阶境界。”</div>
-        </div>
-        <div id="pom-choices-container" class="boon-cards-grid"></div>
-      </div>
-    </div>
-
-    <div id="shop-modal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <div style="font-size: 52px; margin-bottom: 8px;">🏮</div>
-          <div class="modal-title" style="color: #facc15;">东海龙宫珍宝阁与土地神坛</div>
-          <div class="modal-subtitle">以灵石换取仙家丹药与通天至宝</div>
-        </div>
-        <div id="shop-choices-container" class="boon-cards-grid"></div>
-        <button class="modal-close-btn" onclick="closeShopModal()">离开宝阁</button>
-      </div>
-    </div>
-
-    <div id="altar-modal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <div class="modal-title" style="color: #c084fc;">七十二变·地煞神通谱</div>
-          <div class="modal-subtitle">消耗历练所得功德灵砂，淬炼肉身，铸就不朽仙体</div>
-        </div>
-        <div id="altar-items-container" class="altar-grid"></div>
-        <button class="modal-close-btn" onclick="closeAltarModal()">继续西行</button>
-      </div>
-    </div>
-
-    <div id="codex-modal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <div class="modal-title">西游万神伏魔录 (仙圣仙缘宝典)</div>
-          <div class="modal-subtitle">收录三界十一大仙圣神明与神兵重铸秘术</div>
-        </div>
-        <div id="codex-cards-container" class="codex-grid"></div>
-        <button class="modal-close-btn" onclick="closeSkillCodex()">合上宝典</button>
-      </div>
-    </div>
-
     <!-- BUDDHA APPROVAL CUTSCENE MODAL -->
     <div id="buddha-modal" class="modal-overlay">
       <div class="modal-box" style="border-color: #facc15; box-shadow: 0 0 50px rgba(250, 204, 21, 0.7); max-width: 760px; text-align: center;">
@@ -1260,7 +1052,7 @@ html_template = """<!DOCTYPE html>
         boons: [
           { id: 'nezha_strike', name: '烈焰火尖枪', slot: '普通攻击', desc: '【普攻】金箍棒附带三昧真火枪意，使敌人陷入烈火灼烧，3 秒内造成 60 点烈焰伤害。' },
           { id: 'nezha_ring', name: '乾坤金圈阵', slot: '法术法阵', desc: '【法阵】法阵内飞出乾坤圈在最多 6 名敌人之间快速弹射，每次造成 35 点重击伤害。' },
-          { id: 'nezha_dash', name: '风火飞轮遁', slot: '闪避身法', desc: '【闪避】筋斗云带起熊熊烈火轨迹，踏入火海的敌人每秒受到 50 点火焰伤害。' },
+          { id: 'nezha_dash', name: '风火飞轮遁', slot: '闪避身法', desc: '【闪避】筋斗云带起熊枪烈火轨迹，踏入火海的敌人每秒受到 50 点火焰伤害。' },
           { id: 'nezha_special', name: '崩山风火刺', slot: '特殊攻击', desc: '【特殊】定海神针重劈引发地脉烈焰爆发，造成 90 点范围火伤害并将敌人击飞。' }
         ]
       },
@@ -1672,9 +1464,16 @@ html_template = """<!DOCTYPE html>
           this.y += this.vy * dt;
         }
 
-        const bound = 620;
-        this.x = Math.max(-bound, Math.min(bound, this.x));
-        this.y = Math.max(-bound, Math.min(bound, this.y));
+        // HARD ARENA CIRCULAR BOUNDARY CLAMP
+        const boundRadius = 550;
+        const distFromCenter = Math.hypot(this.x, this.y);
+        if (distFromCenter > boundRadius) {
+          const ang = Math.atan2(this.y, this.x);
+          this.x = Math.cos(ang) * boundRadius;
+          this.y = Math.sin(ang) * boundRadius;
+          this.vx = 0;
+          this.vy = 0;
+        }
 
         for (let i = this.dashTrail.length - 1; i >= 0; i--) {
           this.dashTrail[i].alpha -= dt * 3.5;
@@ -1805,9 +1604,9 @@ html_template = """<!DOCTYPE html>
 
               enemy.takeDamage(finalDmg, crit);
 
-              const knock = isTitan ? 380 : (currentCombo === 2 ? 260 : 140);
-              enemy.vx += Math.cos(angleToEnemy) * knock;
-              enemy.vy += Math.sin(angleToEnemy) * knock;
+              const knock = isTitan ? 280 : (currentCombo === 2 ? 180 : 100);
+              enemy.knockbackX += Math.cos(angleToEnemy) * knock;
+              enemy.knockbackY += Math.sin(angleToEnemy) * knock;
 
               this.awakenGauge = Math.min(this.maxAwakenGauge, this.awakenGauge + (crit ? 5 : 2.5));
             }
@@ -1887,8 +1686,8 @@ html_template = """<!DOCTYPE html>
           if (dist <= reach + enemy.radius) {
             enemy.takeDamage(baseDmg, true);
             const knockAngle = Math.atan2(enemy.y - this.y, enemy.x - this.x);
-            enemy.vx += Math.cos(knockAngle) * 340;
-            enemy.vy += Math.sin(knockAngle) * 340;
+            enemy.knockbackX += Math.cos(knockAngle) * 260;
+            enemy.knockbackY += Math.sin(knockAngle) * 260;
           }
         });
 
@@ -2063,7 +1862,6 @@ html_template = """<!DOCTYPE html>
         if (heroImg && heroImg.complete && heroImg.naturalWidth > 0) {
           const cellW = 128;
           const cellH = 128;
-          const numCols = 8;
 
           let r = 0;
           let c = 0;
@@ -2071,10 +1869,10 @@ html_template = """<!DOCTYPE html>
 
           if (this.isAwakened) {
             r = 6;
-            c = Math.floor((Date.now() / 90) % numCols);
+            c = Math.floor((Date.now() / 90) % 7);
           } else if (this.isDashing) {
             r = 5;
-            c = Math.floor((Date.now() / 70) % numCols);
+            c = Math.floor((Date.now() / 70) % 5);
           } else if (this.isAttacking) {
             const progress = 1 - (this.attackDuration / this.attackMaxDuration);
             if (this.direction === 'up') {
@@ -2084,7 +1882,7 @@ html_template = """<!DOCTYPE html>
             } else {
               r = 2;
             }
-            c = Math.min(numCols - 1, Math.floor(progress * numCols));
+            c = Math.min(6, Math.floor(progress * 7));
           } else if (isMoving) {
             if (this.direction === 'up') {
               r = 1;
@@ -2093,7 +1891,7 @@ html_template = """<!DOCTYPE html>
             } else {
               r = 2;
             }
-            c = Math.floor((Date.now() / 95) % numCols);
+            c = 1 + Math.floor((Date.now() / 110) % 6);
           } else {
             if (this.direction === 'up') {
               r = 1;
@@ -2102,7 +1900,7 @@ html_template = """<!DOCTYPE html>
             } else {
               r = 2;
             }
-            c = Math.floor((Date.now() / 150) % 4);
+            c = 0;
           }
 
           const scale = this.isAwakened ? 1.35 : (this.weaponStyle === 'titan' ? 1.25 : 1.0);
@@ -2213,6 +2011,8 @@ html_template = """<!DOCTYPE html>
         this.y = y;
         this.vx = 0;
         this.vy = 0;
+        this.knockbackX = 0;
+        this.knockbackY = 0;
         this.facing = 1;
         this.alive = true;
         this.attackTimer = 0;
@@ -2241,7 +2041,6 @@ html_template = """<!DOCTYPE html>
       }
 
       takeDamage(amount, isCrit = false) {
-        // BUDDHA CANNOT BE BROUGHT DOWN TO 0 LIFE!
         if (this.isBuddhaBoss) {
           if (this.hp <= this.maxHp * 0.08) {
             this.hp = Math.round(this.maxHp * 0.08);
@@ -2286,6 +2085,10 @@ html_template = """<!DOCTYPE html>
       update(dt) {
         if (!this.alive) return;
 
+        // Knockback velocity decay
+        this.knockbackX *= Math.exp(-12 * dt);
+        this.knockbackY *= Math.exp(-12 * dt);
+
         if (this.burnTimer > 0) {
           this.burnTimer -= dt;
           this.hp -= (this.burnDmg * dt);
@@ -2294,6 +2097,9 @@ html_template = """<!DOCTYPE html>
 
         if (this.freezeTimer > 0) {
           this.freezeTimer -= dt;
+          this.x += this.knockbackX * dt;
+          this.y += this.knockbackY * dt;
+          this.clampBoundary();
           return;
         }
 
@@ -2325,12 +2131,10 @@ html_template = """<!DOCTYPE html>
 
         this.attackTimer += dt;
 
-        // COLOSSAL BUDDHA TELEGRAPHED ATTACKS WITH DODGE WINDOWS
         if (this.isBuddhaBoss) {
           if (this.telegraphZone) {
             this.telegraphZone.timer -= dt;
             if (this.telegraphZone.timer <= 0) {
-              // Execute Buddha Palm Slam!
               const tz = this.telegraphZone;
               this.telegraphZone = null;
 
@@ -2353,7 +2157,6 @@ html_template = """<!DOCTYPE html>
             const roll = Math.random();
 
             if (roll < 0.6) {
-              // Telegraphed Tathagata Palm (1.1s dodge window)
               sound.playGong();
               this.telegraphZone = {
                 x: target.x,
@@ -2364,7 +2167,6 @@ html_template = """<!DOCTYPE html>
               };
               floatingTexts.push(new FloatingText(this.x, this.y - 120, '大日如来神掌 · 五指山天降!', '#facc15', 20));
             } else {
-              // Rotating Dharmic Chakra Swastika Rays with Dodge Gaps
               const count = 10;
               for (let i = 0; i < count; i++) {
                 const ang = (i * Math.PI * 2 / count) + (Date.now() * 0.001);
@@ -2376,7 +2178,6 @@ html_template = """<!DOCTYPE html>
           return;
         }
 
-        // Xiao Tian Quan Hound Behavior
         if (this.behavior === 'hound_attack') {
           if (distToTarget > 60) {
             this.vx = Math.cos(angleToTarget) * this.speed * speedMod;
@@ -2420,6 +2221,8 @@ html_template = """<!DOCTYPE html>
             this.vx = Math.cos(angleToTarget) * this.speed * speedMod;
             this.vy = Math.sin(angleToTarget) * this.speed * speedMod;
           } else {
+            this.vx *= 0.5;
+            this.vy *= 0.5;
             if (this.attackTimer >= 1.1) {
               this.attackTimer = 0;
               target.takeDamage(16);
@@ -2427,15 +2230,17 @@ html_template = """<!DOCTYPE html>
             }
           }
         } else if (this.behavior === 'shooter') {
-          if (distToTarget < 240) {
-            this.vx = -Math.cos(angleToTarget) * this.speed * 0.8 * speedMod;
-            this.vy = -Math.sin(angleToTarget) * this.speed * 0.8 * speedMod;
-          } else if (distToTarget > 360) {
+          const myDistCenter = Math.hypot(this.x, this.y);
+          if (distToTarget < 220 && myDistCenter < 480) {
+            this.vx = -Math.cos(angleToTarget) * this.speed * 0.7 * speedMod;
+            this.vy = -Math.sin(angleToTarget) * this.speed * 0.7 * speedMod;
+          } else if (distToTarget > 340) {
             this.vx = Math.cos(angleToTarget) * this.speed * speedMod;
             this.vy = Math.sin(angleToTarget) * this.speed * speedMod;
           } else {
-            this.vx *= 0.8;
-            this.vy *= 0.8;
+            // Circle around player smoothly
+            this.vx = Math.cos(angleToTarget + Math.PI/2) * this.speed * 0.4 * speedMod;
+            this.vy = Math.sin(angleToTarget + Math.PI/2) * this.speed * 0.4 * speedMod;
           }
 
           if (this.attackTimer >= 2.0) {
@@ -2443,43 +2248,43 @@ html_template = """<!DOCTYPE html>
             projectiles.push(new Projectile(this.x, this.y, Math.cos(angleToTarget)*280, Math.sin(angleToTarget)*280, 16, '#38bdf8', true));
           }
         } else if (this.behavior === 'boss_spider') {
-          this.vx = Math.cos(angleToPlayer) * this.speed * 0.7 * speedMod;
-          this.vy = Math.sin(angleToPlayer) * this.speed * 0.7 * speedMod;
+          this.vx = Math.cos(angleToTarget) * this.speed * 0.7 * speedMod;
+          this.vy = Math.sin(angleToTarget) * this.speed * 0.7 * speedMod;
 
           if (this.attackTimer >= 2.2) {
             this.attackTimer = 0;
             for (let i = -2; i <= 2; i++) {
-              const ang = angleToPlayer + (i * 0.25);
+              const ang = angleToTarget + (i * 0.25);
               projectiles.push(new Projectile(this.x, this.y, Math.cos(ang)*260, Math.sin(ang)*260, 22, '#22c55e', true));
             }
           }
         } else if (this.behavior === 'boss_baigu') {
-          this.vx = Math.cos(angleToPlayer) * this.speed * 0.75 * speedMod;
-          this.vy = Math.sin(angleToPlayer) * this.speed * 0.75 * speedMod;
+          this.vx = Math.cos(angleToTarget) * this.speed * 0.75 * speedMod;
+          this.vy = Math.sin(angleToTarget) * this.speed * 0.75 * speedMod;
 
           if (this.attackTimer >= 2.0) {
             this.attackTimer = 0;
             const count = 6;
             for (let i = 0; i < count; i++) {
-              const ang = angleToPlayer + (i * Math.PI * 2 / count);
+              const ang = angleToTarget + (i * Math.PI * 2 / count);
               projectiles.push(new Projectile(this.x, this.y, Math.cos(ang)*250, Math.sin(ang)*250, 25, '#10b981', true));
             }
           }
         } else if (this.behavior === 'boss_jin_yin') {
-          this.vx = Math.cos(angleToPlayer) * this.speed * 0.8 * speedMod;
-          this.vy = Math.sin(angleToPlayer) * this.speed * 0.8 * speedMod;
+          this.vx = Math.cos(angleToTarget) * this.speed * 0.8 * speedMod;
+          this.vy = Math.sin(angleToTarget) * this.speed * 0.8 * speedMod;
 
           if (this.attackTimer >= 1.8) {
             this.attackTimer = 0;
             for (let i = -3; i <= 3; i++) {
-              const ang = angleToPlayer + (i * 0.18);
+              const ang = angleToTarget + (i * 0.18);
               projectiles.push(new Projectile(this.x, this.y, Math.cos(ang)*300, Math.sin(ang)*300, 28, '#f59e0b', true));
             }
           }
         } else if (this.behavior === 'boss_tongbei') {
           const phaseMult = this.phase === 2 ? 1.4 : 1.0;
-          this.vx = Math.cos(angleToPlayer) * this.speed * phaseMult * speedMod;
-          this.vy = Math.sin(angleToPlayer) * this.speed * phaseMult * speedMod;
+          this.vx = Math.cos(angleToTarget) * this.speed * phaseMult * speedMod;
+          this.vy = Math.sin(angleToTarget) * this.speed * phaseMult * speedMod;
 
           if (this.attackTimer >= (this.phase === 2 ? 1.4 : 2.0)) {
             this.attackTimer = 0;
@@ -2493,8 +2298,23 @@ html_template = """<!DOCTYPE html>
           }
         }
 
-        this.x += this.vx * dt;
-        this.y += this.vy * dt;
+        this.x += (this.vx + this.knockbackX) * dt;
+        this.y += (this.vy + this.knockbackY) * dt;
+        this.clampBoundary();
+      }
+
+      clampBoundary() {
+        const boundRadius = 550;
+        const distCenter = Math.hypot(this.x, this.y);
+        if (distCenter > boundRadius) {
+          const ang = Math.atan2(this.y, this.x);
+          this.x = Math.cos(ang) * boundRadius;
+          this.y = Math.sin(ang) * boundRadius;
+          this.vx = 0;
+          this.vy = 0;
+          this.knockbackX = 0;
+          this.knockbackY = 0;
+        }
       }
 
       draw(ctx) {
@@ -2502,7 +2322,8 @@ html_template = """<!DOCTYPE html>
         ctx.save();
         ctx.translate(this.x, this.y);
 
-        // Render Buddha Telegraphed Danger Circle
+        const isMoving = Math.hypot(this.vx, this.vy) > 10;
+
         if (this.telegraphZone) {
           const tz = this.telegraphZone;
           ctx.save();
@@ -2529,7 +2350,6 @@ html_template = """<!DOCTYPE html>
           ctx.restore();
         }
 
-        // Draw Colossal Buddha Boss
         if (this.isBuddhaBoss) {
           const buddhaImg = loadedImages['buddha_colossal'];
           if (buddhaImg && buddhaImg.complete && buddhaImg.naturalWidth > 0) {
@@ -2540,7 +2360,6 @@ html_template = """<!DOCTYPE html>
             const drawW = 340;
             const drawH = 340;
 
-            // Radiant Halo
             ctx.save();
             ctx.rotate(Date.now() * 0.0005);
             ctx.beginPath();
@@ -2558,8 +2377,15 @@ html_template = """<!DOCTYPE html>
             const cellW = 160;
             const cellH = 160;
 
-            let r = this.isHound ? (Math.hypot(this.vx, this.vy) > 10 ? 3 : 4) : (this.state === 'thrust' ? 1 : (this.state === 'command' ? 2 : 0));
-            let c = Math.floor((Date.now() / 130) % 4);
+            let r = 0;
+            let c = 0;
+            if (this.isHound) {
+              r = 3;
+              c = isMoving ? Math.floor((Date.now() / 120) % 4) : 0;
+            } else {
+              r = (this.state === 'thrust' ? 1 : (this.state === 'command' ? 2 : 0));
+              c = (this.state === 'idle') ? (isMoving ? Math.floor((Date.now() / 140) % 4) : 0) : Math.floor((Date.now() / 120) % 4);
+            }
 
             const scale = this.isErlangBoss ? 1.35 : 0.85;
             const drawW = cellW * scale;
@@ -2590,8 +2416,7 @@ html_template = """<!DOCTYPE html>
               else if (this.direction === 'right') baseCol = 4;
               else if (this.direction === 'left') baseCol = 6;
 
-              const step = Math.floor((Date.now() / 150) % 2);
-              c = Math.min(this.cols - 1, baseCol + step);
+              c = isMoving ? (baseCol + Math.floor((Date.now() / 160) % 2)) : baseCol;
             }
 
             const r = this.row;
@@ -2944,7 +2769,6 @@ html_template = """<!DOCTYPE html>
         icon.style.backgroundSize = `700% 400%`;
       }
 
-      // Grant Divine Buddha Blessing
       player.maxHp += 100;
       player.hp = player.maxHp;
       player.lives += 1;
@@ -2958,7 +2782,7 @@ html_template = """<!DOCTYPE html>
       document.getElementById('buddha-modal').style.display = 'none';
       gameState.isPaused = false;
       gameState.chamberCleared = true;
-      startChamber(151); // Directly advance to Chamber 151 (leading to Tongbei Yuanhou!)
+      startChamber(151);
     }
 
     // EXIT GATES & PROGRESSION
@@ -3093,7 +2917,7 @@ html_template = """<!DOCTYPE html>
         for (let i = 0; i < enemyCount; i++) {
           const t = availableTypes[Math.floor(Math.random() * availableTypes.length)];
           const ang = (i / enemyCount) * Math.PI * 2;
-          const dist = 180 + Math.random() * 140;
+          const dist = 140 + Math.random() * 180;
           enemies.push(new Enemy(t, Math.cos(ang)*dist, Math.sin(ang)*dist));
         }
       }
@@ -3539,10 +3363,12 @@ html_template = """<!DOCTYPE html>
           ctx.stroke();
         }
 
-        // Golden Boundary Frame
+        // Golden Boundary Ring
+        ctx.beginPath();
+        ctx.arc(0, 0, 560, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(230, 180, 80, 0.75)';
-        ctx.lineWidth = 10;
-        ctx.strokeRect(-680, -680, 1360, 1360);
+        ctx.lineWidth = 8;
+        ctx.stroke();
 
         // 2. Draw Lu Ban Avatar if present
         if (activeLubanAvatar) {
@@ -3609,7 +3435,7 @@ html_template = """<!DOCTYPE html>
 
           if (exitGates.length > 0) {
             const nearestGate = exitGates[0];
-            const angToGate = Math.atan2(nearestGate.y - player.y, nearestGate.x - player.x);
+            const angToGate = Math.atan2(nearestGate.y - player.y, nearestGate.x - nearestGate.y);
             ctx.save();
             ctx.translate(player.x + Math.cos(angToGate)*50, player.y + Math.sin(angToGate)*50);
             ctx.rotate(angToGate);
@@ -3654,4 +3480,4 @@ final_html = html_template.replace('%ASSETS_JSON%', json.dumps(b64_data))
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(final_html)
 
-print(f"Successfully compiled index.html with colossal Buddha and approval cutscene ({len(final_html)} bytes)!")
+print(f"Successfully compiled index.html with arena boundary containment and knockback damping ({len(final_html)} bytes)!")

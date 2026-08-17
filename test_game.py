@@ -13,28 +13,33 @@ def test_game_features():
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    # 1. Check Colossal Buddha & Approval Cutscene
+    # 1. Check Arena Boundary Containment & Knockback Damping
+    assert "clampBoundary" in html, "Enemy boundary clamp should exist!"
+    assert "boundRadius" in html, "Hard arena boundary radius should exist!"
+    assert "knockbackX" in html, "Damped knockback physics should exist!"
+
+    # 2. Check Colossal Buddha & Approval Cutscene
     assert "buddha_colossal" in html, "Colossal Buddha asset should exist!"
     assert "triggerBuddhaApprovalCutscene" in html, "Buddha approval cutscene function should exist!"
     assert "大日如来神掌" in html, "Tathagata palm attack should exist!"
     assert "telegraphZone" in html, "Telegraphed dodge window for Buddha attacks should exist!"
     assert "buddha-modal" in html, "Buddha cutscene modal should exist!"
 
-    # 2. Check Buff Erlang & Independent Xiao Tian Quan
+    # 3. Check Buff Erlang & Independent Xiao Tian Quan
     assert "erlang_and_dog" in html, "Erlang & Dog asset should exist!"
     assert "xiaotianquan_hound" in html, "Independent Xiao Tian Quan combat entity should exist!"
     assert "三尖两刃枪" in html, "Erlang trident spear should exist!"
 
-    # 3. Check Lu Ban in-game avatar
+    # 4. Check Lu Ban in-game avatar
     assert "luban_avatar" in html, "Lu Ban avatar asset should exist!"
     assert "LubanAvatarNPC" in html, "Lu Ban avatar NPC class should exist!"
     assert "巧圣仙师·鲁班" in html, "Lu Ban name should exist!"
 
-    # 4. Check 4-Directional movement & attack perspectives
+    # 5. Check 4-Directional movement & attack perspectives
     assert "direction = 'up'" in html, "Up direction should exist!"
     assert "direction = 'down'" in html, "Down direction should exist!"
 
-    # 5. Check 180 levels & Final Boss Tongbei
+    # 6. Check 180 levels & Final Boss Tongbei
     assert "boss_tongbei" in html, "Final boss Tongbei Yuanhou should exist!"
     assert "180" in html, "180 levels should exist!"
 
