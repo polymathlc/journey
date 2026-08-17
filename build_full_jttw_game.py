@@ -1,6 +1,6 @@
 """
 Journey to the West: From Cave to Heaven & Showdown with Tongbei Yuanhou
-(西游记：大闹天宫与通臂之决 - 100% 简体中文 180重天史诗动作肉鸽)
+(西游记：大闹天宫与通臂之决 - 100% 简体中文 180重天史诗动作肉鸽 - 浏览器与 GitHub Pages 极速稳定版)
 """
 
 import os
@@ -37,7 +37,7 @@ html_template = """<!DOCTYPE html>
   <title>西游记：大闹天宫与通臂之决 (180重天动作肉鸽)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@600;700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold-primary: #e6b450;
@@ -87,11 +87,14 @@ html_template = """<!DOCTYPE html>
     }
 
     canvas#gameCanvas {
-      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      display: block;
       cursor: crosshair;
+      z-index: 1;
     }
 
     /* UI Layer Overlay */
@@ -106,6 +109,7 @@ html_template = """<!DOCTYPE html>
       flex-direction: column;
       justify-content: space-between;
       padding: 20px;
+      z-index: 10;
     }
 
     /* Top HUD */
@@ -828,7 +832,6 @@ html_template = """<!DOCTYPE html>
           <div id="god-quote" class="modal-quote">“泼猴，接本君三尖两刃枪之威！荡尽三界妖邪，休得阻碍西行正道！”</div>
         </div>
         <div id="boon-choices-container" class="boon-cards-grid">
-          <!-- Dynamically populated 3 boon choices -->
         </div>
       </div>
     </div>
@@ -843,7 +846,6 @@ html_template = """<!DOCTYPE html>
           <div class="modal-quote">“服食一枚仙桃，顿增三千年道行功力！请选择一项已修习的神通提升品阶境界。”</div>
         </div>
         <div id="pom-choices-container" class="boon-cards-grid">
-          <!-- Dynamically populated 3 equipped boons -->
         </div>
       </div>
     </div>
@@ -857,7 +859,6 @@ html_template = """<!DOCTYPE html>
           <div class="modal-subtitle">以灵石换取仙家丹药与通天至宝</div>
         </div>
         <div id="shop-choices-container" class="boon-cards-grid">
-          <!-- Dynamically populated 3 shop items -->
         </div>
         <button class="modal-close-btn" onclick="closeShopModal()">离开宝阁</button>
       </div>
@@ -871,7 +872,6 @@ html_template = """<!DOCTYPE html>
           <div class="modal-subtitle">消耗历练所得功德灵砂，淬炼肉身，铸就不朽仙体</div>
         </div>
         <div id="altar-items-container" class="altar-grid">
-          <!-- Dynamically populated 6 transform traits -->
         </div>
         <button class="modal-close-btn" onclick="closeAltarModal()">继续西行</button>
       </div>
@@ -885,7 +885,6 @@ html_template = """<!DOCTYPE html>
           <div class="modal-subtitle">收录三界十大神仙与一百零八式通天神通</div>
         </div>
         <div id="codex-cards-container" class="codex-grid">
-          <!-- Populated with all 10 gods -->
         </div>
         <button class="modal-close-btn" onclick="closeSkillCodex()">合上宝典</button>
       </div>
@@ -947,183 +946,201 @@ html_template = """<!DOCTYPE html>
 
       playStaffSwing() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const filter = this.ctx.createBiquadFilter();
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(340, t);
-        osc.frequency.exponentialRampToValueAtTime(140, t + 0.14);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(340, t);
+          osc.frequency.exponentialRampToValueAtTime(140, t + 0.14);
 
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(900, t);
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(900, t);
 
-        gain.gain.setValueAtTime(0.3, t);
-        gain.gain.linearRampToValueAtTime(0.01, t + 0.14);
+          gain.gain.setValueAtTime(0.3, t);
+          gain.gain.linearRampToValueAtTime(0.01, t + 0.14);
 
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
 
-        osc.start(t);
-        osc.stop(t + 0.14);
+          osc.start(t);
+          osc.stop(t + 0.14);
+        } catch(e) {}
       }
 
       playStaffHit() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const osc1 = this.ctx.createOscillator();
-        const gain1 = this.ctx.createGain();
-        osc1.type = 'triangle';
-        osc1.frequency.setValueAtTime(620, t);
-        osc1.frequency.exponentialRampToValueAtTime(220, t + 0.18);
-        gain1.gain.setValueAtTime(0.45, t);
-        gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-        osc1.connect(gain1);
-        gain1.connect(this.ctx.destination);
-        osc1.start(t);
-        osc1.stop(t + 0.18);
+        try {
+          const t = this.ctx.currentTime;
+          const osc1 = this.ctx.createOscillator();
+          const gain1 = this.ctx.createGain();
+          osc1.type = 'triangle';
+          osc1.frequency.setValueAtTime(620, t);
+          osc1.frequency.exponentialRampToValueAtTime(220, t + 0.18);
+          gain1.gain.setValueAtTime(0.45, t);
+          gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+          osc1.connect(gain1);
+          gain1.connect(this.ctx.destination);
+          osc1.start(t);
+          osc1.stop(t + 0.18);
 
-        const osc2 = this.ctx.createOscillator();
-        const gain2 = this.ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(140, t);
-        osc2.frequency.exponentialRampToValueAtTime(45, t + 0.22);
-        gain2.gain.setValueAtTime(0.55, t);
-        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-        osc2.connect(gain2);
-        gain2.connect(this.ctx.destination);
-        osc2.start(t);
-        osc2.stop(t + 0.22);
+          const osc2 = this.ctx.createOscillator();
+          const gain2 = this.ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(140, t);
+          osc2.frequency.exponentialRampToValueAtTime(45, t + 0.22);
+          gain2.gain.setValueAtTime(0.55, t);
+          gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+          osc2.connect(gain2);
+          gain2.connect(this.ctx.destination);
+          osc2.start(t);
+          osc2.stop(t + 0.22);
+        } catch(e) {}
       }
 
       playStaffSmash() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(240, t);
-        osc.frequency.exponentialRampToValueAtTime(30, t + 0.45);
-
-        gain.gain.setValueAtTime(0.65, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(t);
-        osc.stop(t + 0.45);
-      }
-
-      playGong() {
-        if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const freqs = [180, 260, 390, 520];
-        freqs.forEach((freq, idx) => {
+        try {
+          const t = this.ctx.currentTime;
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
-          osc.frequency.setValueAtTime(freq, t);
-          osc.frequency.exponentialRampToValueAtTime(freq * 0.96, t + 1.8);
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(240, t);
+          osc.frequency.exponentialRampToValueAtTime(30, t + 0.45);
 
-          gain.gain.setValueAtTime(0.28 / (idx + 1), t);
-          gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+          gain.gain.setValueAtTime(0.65, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
 
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(t);
-          osc.stop(t + 1.8);
-        });
+          osc.stop(t + 0.45);
+        } catch(e) {}
+      }
+
+      playGong() {
+        if (!this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const freqs = [180, 260, 390, 520];
+          freqs.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            osc.frequency.exponentialRampToValueAtTime(freq * 0.96, t + 1.8);
+
+            gain.gain.setValueAtTime(0.28 / (idx + 1), t);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 1.8);
+          });
+        } catch(e) {}
       }
 
       playJadeChime() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const freqs = [523.25, 659.25, 783.99, 1046.5];
-        freqs.forEach((f, i) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(f, t + i * 0.06);
+        try {
+          const t = this.ctx.currentTime;
+          const freqs = [523.25, 659.25, 783.99, 1046.5];
+          freqs.forEach((f, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, t + i * 0.06);
 
-          gain.gain.setValueAtTime(0.25, t + i * 0.06);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 1.2);
+            gain.gain.setValueAtTime(0.25, t + i * 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 1.2);
 
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(t + i * 0.06);
-          osc.stop(t + i * 0.06 + 1.2);
-        });
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t + i * 0.06);
+            osc.stop(t + i * 0.06 + 1.2);
+          });
+        } catch(e) {}
       }
 
       playPeachBite() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const bufferSize = this.ctx.sampleRate * 0.12;
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
-        }
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-        const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.45, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
-        noise.connect(gain);
-        gain.connect(this.ctx.destination);
-        noise.start(t);
+        try {
+          const t = this.ctx.currentTime;
+          const bufferSize = this.ctx.sampleRate * 0.12;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.45, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+          noise.connect(gain);
+          gain.connect(this.ctx.destination);
+          noise.start(t);
 
-        setTimeout(() => this.playJadeChime(), 100);
+          setTimeout(() => this.playJadeChime(), 100);
+        } catch(e) {}
       }
 
       playDash() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(650, t);
-        osc.frequency.exponentialRampToValueAtTime(180, t + 0.2);
-        gain.gain.setValueAtTime(0.28, t);
-        gain.gain.linearRampToValueAtTime(0.001, t + 0.2);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(t);
-        osc.stop(t + 0.2);
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(650, t);
+          osc.frequency.exponentialRampToValueAtTime(180, t + 0.2);
+          gain.gain.setValueAtTime(0.28, t);
+          gain.gain.linearRampToValueAtTime(0.001, t + 0.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.2);
+        } catch(e) {}
       }
 
       playLightning() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(480, t);
-        osc.frequency.exponentialRampToValueAtTime(70, t + 0.25);
-        gain.gain.setValueAtTime(0.48, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(t);
-        osc.stop(t + 0.25);
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(480, t);
+          osc.frequency.exponentialRampToValueAtTime(70, t + 0.25);
+          gain.gain.setValueAtTime(0.48, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.25);
+        } catch(e) {}
       }
 
       playFire() {
         if (!this.ctx) return;
-        const t = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(260, t);
-        osc.frequency.linearRampToValueAtTime(100, t + 0.3);
-        gain.gain.setValueAtTime(0.38, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(t);
-        osc.stop(t + 0.3);
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(260, t);
+          osc.frequency.linearRampToValueAtTime(100, t + 0.3);
+          gain.gain.setValueAtTime(0.38, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.3);
+        } catch(e) {}
       }
 
       playAwaken() {
@@ -1370,8 +1387,8 @@ html_template = """<!DOCTYPE html>
     const ctx = canvas.getContext('2d');
 
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth || document.documentElement.clientWidth || 1280;
+      canvas.height = window.innerHeight || document.documentElement.clientHeight || 720;
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -1990,11 +2007,11 @@ html_template = """<!DOCTYPE html>
         }
 
         const heroImg = loadedImages['hero'];
-        if (heroImg && heroImg.complete) {
+        if (heroImg && heroImg.complete && heroImg.naturalWidth > 0) {
           const cols = 8;
           const rows = 7;
-          const cellW = 1024 / cols;
-          const cellH = 1024 / rows;
+          const cellW = heroImg.naturalWidth / cols;
+          const cellH = heroImg.naturalHeight / rows;
 
           let r = 0;
           let c = 0;
@@ -2032,12 +2049,23 @@ html_template = """<!DOCTYPE html>
           ctx.drawImage(heroImg, c * cellW, r * cellH, cellW, cellH, -drawW/2, -drawH/2 - 8, drawW, drawH);
           ctx.restore();
         } else {
+          // Fallback procedural Sun Wukong
           ctx.beginPath();
           ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
           ctx.fillStyle = '#f59e0b';
           ctx.fill();
           ctx.strokeStyle = '#fff';
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          // Golden Crown & Staff
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(-12, -26, 24, 6);
+          ctx.strokeStyle = '#facc15';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(-18, 0);
+          ctx.lineTo(24, 0);
           ctx.stroke();
         }
 
@@ -2281,15 +2309,15 @@ html_template = """<!DOCTYPE html>
         ctx.translate(this.x, this.y);
 
         const img = loadedImages[this.sheet] || loadedImages['monsters_beasts'];
-        if (img && img.complete) {
-          let cellW = img.width / this.cols;
-          let cellH = img.height / this.rows;
+        if (img && img.complete && img.naturalWidth > 0) {
+          let cellW = img.naturalWidth / this.cols;
+          let cellH = img.naturalHeight / this.rows;
           let offsetX = 0;
 
           if (this.isRightHalf) {
-            cellW = img.width / 2;
-            cellH = img.height / 2;
-            offsetX = img.width / 2;
+            cellW = img.naturalWidth / 2;
+            cellH = img.naturalHeight / 2;
+            offsetX = img.naturalWidth / 2;
           }
 
           const c = Math.floor((Date.now() / 140) % (this.cols > 4 ? 4 : this.cols));
@@ -2724,7 +2752,7 @@ html_template = """<!DOCTYPE html>
 
       const portrait = document.getElementById('god-portrait');
       const godSheet = loadedImages['all_10_gods'];
-      if (godSheet && godSheet.complete) {
+      if (godSheet && godSheet.complete && godSheet.naturalWidth > 0) {
         const col = god.portraitIndex % 5;
         const row = Math.floor(god.portraitIndex / 5);
         portrait.style.backgroundImage = `url(${godSheet.src})`;
@@ -2793,7 +2821,7 @@ html_template = """<!DOCTYPE html>
 
       const peachIcon = document.getElementById('peach-modal-icon');
       const rewImg = loadedImages['reward_icons'];
-      if (rewImg && rewImg.complete) {
+      if (rewImg && rewImg.complete && rewImg.naturalWidth > 0) {
         peachIcon.style.backgroundImage = `url(${rewImg.src})`;
         peachIcon.style.backgroundPosition = `0 0`;
         peachIcon.style.backgroundSize = `200% 200%`;
@@ -3031,150 +3059,187 @@ html_template = """<!DOCTYPE html>
     }
 
     // ==========================================
-    // MAIN GAME LOOP & RENDERING
+    // MAIN GAME LOOP & RENDERING (FAIL-SAFE)
     // ==========================================
-    let lastTime = performance.now();
+    let lastTime = 0;
 
     function gameLoop(currentTime) {
-      const dt = Math.min(0.1, (currentTime - lastTime) / 1000);
-      lastTime = currentTime;
+      requestAnimationFrame(gameLoop);
 
-      if (!gameState.isPaused) {
-        player.update(dt);
+      try {
+        if (!lastTime) lastTime = currentTime;
+        const dt = Math.min(0.05, (currentTime - lastTime) / 1000);
+        lastTime = currentTime;
 
-        enemies.forEach(e => e.update(dt));
-        enemies = enemies.filter(e => e.alive || e.burnTimer > 0);
+        if (!gameState.isPaused) {
+          player.update(dt);
 
-        projectiles.forEach(p => p.update(dt));
-        projectiles = projectiles.filter(p => p.alive);
+          enemies.forEach(e => e.update(dt));
+          enemies = enemies.filter(e => e.alive || e.burnTimer > 0);
 
-        fxList.forEach(fx => fx.update(dt));
-        fxList = fxList.filter(fx => fx.alpha > 0);
+          projectiles.forEach(p => p.update(dt));
+          projectiles = projectiles.filter(p => p.alive);
 
-        floatingTexts.forEach(ft => ft.update(dt));
-        floatingTexts = floatingTexts.filter(ft => ft.alpha > 0);
+          fxList.forEach(fx => fx.update(dt));
+          fxList = fxList.filter(fx => fx.alpha > 0);
 
-        checkChamberClear();
+          floatingTexts.forEach(ft => ft.update(dt));
+          floatingTexts = floatingTexts.filter(ft => ft.alpha > 0);
 
-        if (gameState.chamberCleared) {
-          exitGates.forEach(gate => {
-            const dist = Math.hypot(player.x - gate.x, player.y - gate.y);
-            if (dist <= gate.radius + player.radius) {
-              if (gate.rewardType === 'god') {
-                openGodBoonModal(gate.godKey);
-              } else if (gate.rewardType === 'peach') {
-                openPeachModal();
-              } else if (gate.rewardType === 'shop') {
-                openShopModal();
-              } else if (gate.rewardType === 'heart') {
-                player.maxHp += 30;
-                player.hp = Math.min(player.maxHp, player.hp + 30);
-                sound.playJadeChime();
-                floatingTexts.push(new FloatingText(player.x, player.y - 40, '气血上限 +30!', '#10b981'));
-              } else if (gate.rewardType === 'ashes') {
-                gameState.ashes += 25;
-                sound.playJadeChime();
-                floatingTexts.push(new FloatingText(player.x, player.y - 40, '功德灵砂 +25!', '#c084fc'));
+          checkChamberClear();
+
+          if (gameState.chamberCleared) {
+            exitGates.forEach(gate => {
+              const dist = Math.hypot(player.x - gate.x, player.y - gate.y);
+              if (dist <= gate.radius + player.radius) {
+                if (gate.rewardType === 'god') {
+                  openGodBoonModal(gate.godKey);
+                } else if (gate.rewardType === 'peach') {
+                  openPeachModal();
+                } else if (gate.rewardType === 'shop') {
+                  openShopModal();
+                } else if (gate.rewardType === 'heart') {
+                  player.maxHp += 30;
+                  player.hp = Math.min(player.maxHp, player.hp + 30);
+                  sound.playJadeChime();
+                  floatingTexts.push(new FloatingText(player.x, player.y - 40, '气血上限 +30!', '#10b981'));
+                } else if (gate.rewardType === 'ashes') {
+                  gameState.ashes += 25;
+                  sound.playJadeChime();
+                  floatingTexts.push(new FloatingText(player.x, player.y - 40, '功德灵砂 +25!', '#c084fc'));
+                }
+
+                if (gameState.chamberIndex >= 180 && !enemies.some(e => e.isFinalBoss && e.alive)) {
+                  handleGameOver(true);
+                } else {
+                  startChamber(gameState.chamberIndex + 1);
+                }
               }
-
-              if (gameState.chamberIndex >= 180 && !enemies.some(e => e.isFinalBoss && e.alive)) {
-                handleGameOver(true);
-              } else {
-                startChamber(gameState.chamberIndex + 1);
-              }
-            }
-          });
+            });
+          }
         }
-      }
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Render Canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.save();
-      let shakeX = 0;
-      let shakeY = 0;
-      if (gameState.screenShake > 0) {
-        shakeX = (Math.random() * 2 - 1) * gameState.screenShake;
-        shakeY = (Math.random() * 2 - 1) * gameState.screenShake;
-        gameState.screenShake = Math.max(0, gameState.screenShake - dt * 25);
-      }
+        ctx.save();
+        let shakeX = 0;
+        let shakeY = 0;
+        if (gameState.screenShake > 0) {
+          shakeX = (Math.random() * 2 - 1) * gameState.screenShake;
+          shakeY = (Math.random() * 2 - 1) * gameState.screenShake;
+          gameState.screenShake = Math.max(0, gameState.screenShake - dt * 25);
+        }
 
-      ctx.translate(canvas.width / 2 - player.x + shakeX, canvas.height / 2 - player.y + shakeY);
+        ctx.translate(canvas.width / 2 - player.x + shakeX, canvas.height / 2 - player.y + shakeY);
 
-      const floorImg = loadedImages['seamless_floor'];
-      if (floorImg && floorImg.complete) {
-        ctx.drawImage(floorImg, -700, -700, 1400, 1400);
-      } else {
-        ctx.fillStyle = '#140f20';
-        ctx.fillRect(-700, -700, 1400, 1400);
-      }
+        // 1. Draw Celestial Floor
+        const floorImg = loadedImages['seamless_floor'];
+        if (floorImg && floorImg.complete && floorImg.naturalWidth > 0) {
+          ctx.drawImage(floorImg, -700, -700, 1400, 1400);
+        } else {
+          ctx.fillStyle = '#161026';
+          ctx.fillRect(-700, -700, 1400, 1400);
 
-      ctx.strokeStyle = 'rgba(230, 180, 80, 0.75)';
-      ctx.lineWidth = 10;
-      ctx.strokeRect(-680, -680, 1360, 1360);
-
-      if (gameState.chamberCleared) {
-        exitGates.forEach(gate => {
-          ctx.save();
-          ctx.translate(gate.x, gate.y);
-
+          // Procedural Bagua Arena
           ctx.beginPath();
-          ctx.arc(0, 0, gate.radius, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(230, 180, 80, 0.25)';
+          ctx.arc(0, 0, 600, 0, Math.PI * 2);
+          ctx.fillStyle = '#1a1330';
           ctx.fill();
-          ctx.strokeStyle = '#facc15';
-          ctx.lineWidth = 4;
-          ctx.shadowColor = '#facc15';
-          ctx.shadowBlur = 16;
+          ctx.strokeStyle = '#e6b450';
+          ctx.lineWidth = 6;
           ctx.stroke();
 
-          const rewImg = loadedImages['reward_icons'];
-          if (rewImg && rewImg.complete) {
-            let col = 0, row = 0;
-            if (gate.rewardType === 'peach') { col = 0; row = 0; }
-            else if (gate.rewardType === 'shop') { col = 1; row = 0; }
-            else if (gate.rewardType === 'heart') { col = 0; row = 1; }
-            else if (gate.rewardType === 'ashes') { col = 1; row = 1; }
-            else if (gate.rewardType === 'god') {
-              const godsImg = loadedImages['all_10_gods'];
-              if (godsImg && godsImg.complete) {
-                const gIndex = GODS[gate.godKey].portraitIndex;
-                const gCol = gIndex % 5;
-                const gRow = Math.floor(gIndex / 5);
-                const gW = godsImg.width / 5;
-                const gH = godsImg.height / 2;
-                ctx.drawImage(godsImg, gCol * gW, gRow * gH, gW, gH, -36, -36, 72, 72);
+          ctx.beginPath();
+          ctx.arc(0, 0, 300, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(230, 180, 80, 0.4)';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        }
+
+        // Golden Boundary Frame
+        ctx.strokeStyle = 'rgba(230, 180, 80, 0.75)';
+        ctx.lineWidth = 10;
+        ctx.strokeRect(-680, -680, 1360, 1360);
+
+        // 2. Draw Exit Gates
+        if (gameState.chamberCleared) {
+          exitGates.forEach(gate => {
+            ctx.save();
+            ctx.translate(gate.x, gate.y);
+
+            ctx.beginPath();
+            ctx.arc(0, 0, gate.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(230, 180, 80, 0.25)';
+            ctx.fill();
+            ctx.strokeStyle = '#facc15';
+            ctx.lineWidth = 4;
+            ctx.shadowColor = '#facc15';
+            ctx.shadowBlur = 16;
+            ctx.stroke();
+
+            const rewImg = loadedImages['reward_icons'];
+            if (rewImg && rewImg.complete && rewImg.naturalWidth > 0) {
+              let col = 0, row = 0;
+              if (gate.rewardType === 'peach') { col = 0; row = 0; }
+              else if (gate.rewardType === 'shop') { col = 1; row = 0; }
+              else if (gate.rewardType === 'heart') { col = 0; row = 1; }
+              else if (gate.rewardType === 'ashes') { col = 1; row = 1; }
+              else if (gate.rewardType === 'god') {
+                const godsImg = loadedImages['all_10_gods'];
+                if (godsImg && godsImg.complete && godsImg.naturalWidth > 0) {
+                  const gIndex = GODS[gate.godKey].portraitIndex;
+                  const gCol = gIndex % 5;
+                  const gRow = Math.floor(gIndex / 5);
+                  const gW = godsImg.naturalWidth / 5;
+                  const gH = godsImg.naturalHeight / 2;
+                  ctx.drawImage(godsImg, gCol * gW, gRow * gH, gW, gH, -36, -36, 72, 72);
+                }
               }
+
+              if (gate.rewardType !== 'god') {
+                const rW = rewImg.naturalWidth / 2;
+                const rH = rewImg.naturalHeight / 2;
+                ctx.drawImage(rewImg, col * rW, row * rH, rW, rH, -36, -36, 72, 72);
+              }
+            } else {
+              // Fallback text icon
+              ctx.font = '28px sans-serif';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              let emoji = '🍑';
+              if (gate.rewardType === 'shop') emoji = '🏮';
+              if (gate.rewardType === 'heart') emoji = '💖';
+              if (gate.rewardType === 'ashes') emoji = '✨';
+              if (gate.rewardType === 'god') emoji = '⚡';
+              ctx.fillText(emoji, 0, 0);
             }
 
-            if (gate.rewardType !== 'god') {
-              const rW = rewImg.width / 2;
-              const rH = rewImg.height / 2;
-              ctx.drawImage(rewImg, col * rW, row * rH, rW, rH, -36, -36, 72, 72);
-            }
-          }
+            ctx.font = "bold 15px 'Ma Shan Zheng', serif";
+            ctx.fillStyle = '#fff2a8';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 6;
+            ctx.fillText(gate.label, 0, -gate.radius - 12);
 
-          ctx.font = "bold 15px 'Ma Shan Zheng', serif";
-          ctx.fillStyle = '#fff2a8';
-          ctx.textAlign = 'center';
-          ctx.shadowColor = '#000';
-          ctx.shadowBlur = 6;
-          ctx.fillText(gate.label, 0, -gate.radius - 12);
+            ctx.restore();
+          });
+        }
 
-          ctx.restore();
-        });
+        // 3. Draw Entities
+        player.draw(ctx);
+        enemies.forEach(e => e.draw(ctx));
+        projectiles.forEach(p => p.draw(ctx));
+        fxList.forEach(fx => fx.draw(ctx));
+        floatingTexts.forEach(ft => ft.draw(ctx));
+
+        ctx.restore();
+      } catch (err) {
+        console.error("Game loop render error:", err);
       }
-
-      player.draw(ctx);
-      enemies.forEach(e => e.draw(ctx));
-      projectiles.forEach(p => p.draw(ctx));
-      fxList.forEach(fx => fx.draw(ctx));
-      floatingTexts.forEach(ft => ft.draw(ctx));
-
-      ctx.restore();
-
-      requestAnimationFrame(gameLoop);
     }
 
+    // Initialize & Launch
     player.resetForRun();
     startChamber(1);
     requestAnimationFrame(gameLoop);
