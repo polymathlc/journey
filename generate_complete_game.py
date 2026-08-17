@@ -1,6 +1,6 @@
 """
 Journey to the West: Havoc in Heaven (西游记·大闹天宫)
-Enhanced Game Generator Script
+Enhanced Game Generator with Complete Brand New Custom Visual Assets
 """
 
 import os
@@ -26,7 +26,7 @@ for k in assets_keys:
             enc = base64.b64encode(fp.read()).decode('utf-8')
             b64_data[k] = f"data:image/webp;base64,{enc}"
 
-print(f"Loaded {len(b64_data)} assets.")
+print(f"Loaded {len(b64_data)} brand new assets.")
 
 # HTML / CSS / JS Template for Journey to the West
 html_template = """<!DOCTYPE html>
@@ -71,7 +71,7 @@ html_template = """<!DOCTYPE html>
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: #08060d;
+      background-color: #06040a;
       font-family: var(--font-body);
       color: #f1e9da;
     }
@@ -83,7 +83,7 @@ html_template = """<!DOCTYPE html>
       display: flex;
       justify-content: center;
       align-items: center;
-      background: radial-gradient(circle at center, #1b1226 0%, #06040a 100%);
+      background: radial-gradient(circle at center, #1e142e 0%, #06040a 100%);
     }
 
     canvas#gameCanvas {
@@ -120,7 +120,7 @@ html_template = """<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       gap: 8px;
-      width: 340px;
+      width: 350px;
       filter: drop-shadow(0 4px 14px rgba(0,0,0,0.9));
     }
 
@@ -131,10 +131,20 @@ html_template = """<!DOCTYPE html>
       margin-bottom: 2px;
     }
 
+    .hero-avatar-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      box-shadow: 0 0 10px rgba(230, 180, 80, 0.7);
+      background-size: cover;
+      background-position: center;
+    }
+
     .hero-name {
       font-family: var(--font-title);
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 900;
       color: var(--gold-light);
       letter-spacing: 1px;
       text-shadow: 0 0 8px rgba(230, 180, 80, 0.6);
@@ -142,8 +152,9 @@ html_template = """<!DOCTYPE html>
 
     .hero-title {
       font-family: var(--font-chinese);
-      font-size: 14px;
+      font-size: 15px;
       color: #f87171;
+      margin-left: 6px;
     }
 
     .bar-wrapper {
@@ -205,7 +216,7 @@ html_template = """<!DOCTYPE html>
 
     .chamber-title {
       font-family: var(--font-title);
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 900;
       color: var(--gold-light);
       letter-spacing: 2px;
@@ -214,7 +225,7 @@ html_template = """<!DOCTYPE html>
 
     .chamber-subtitle {
       font-family: var(--font-chinese);
-      font-size: 14px;
+      font-size: 15px;
       color: #e2e8f0;
       letter-spacing: 1.5px;
       margin-top: 3px;
@@ -225,7 +236,7 @@ html_template = """<!DOCTYPE html>
       display: flex;
       align-items: center;
       gap: 16px;
-      background: rgba(14, 13, 19, 0.85);
+      background: rgba(14, 13, 19, 0.88);
       border: 2px solid var(--gold-dark);
       border-radius: 8px;
       padding: 6px 14px;
@@ -304,9 +315,9 @@ html_template = """<!DOCTYPE html>
 
     .action-slot {
       position: relative;
-      width: 62px;
-      height: 62px;
-      background: rgba(18, 14, 26, 0.85);
+      width: 64px;
+      height: 64px;
+      background: rgba(18, 14, 26, 0.88);
       border: 2px solid var(--gold-dark);
       border-radius: 10px;
       display: flex;
@@ -354,7 +365,7 @@ html_template = """<!DOCTYPE html>
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 56px;
+      max-width: 58px;
     }
 
     /* Right Quick Buttons */
@@ -394,7 +405,7 @@ html_template = """<!DOCTYPE html>
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(6, 4, 10, 0.88);
+      background: rgba(4, 2, 8, 0.90);
       backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
@@ -433,11 +444,11 @@ html_template = """<!DOCTYPE html>
     }
 
     .modal-god-portrait {
-      width: 110px;
-      height: 110px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       border: 3px solid var(--gold-primary);
-      box-shadow: 0 0 20px rgba(230, 180, 80, 0.6);
+      box-shadow: 0 0 24px rgba(230, 180, 80, 0.8);
       margin-bottom: 12px;
       background-size: cover;
       background-position: center;
@@ -725,7 +736,7 @@ html_template = """<!DOCTYPE html>
         <div class="player-bars">
           <div class="hero-tag">
             <span class="hero-name">SUN WUKONG</span>
-            <span class="hero-title">齐天大圣</span>
+            <span class="hero-title">齐天大圣 · 如意金箍棒</span>
           </div>
           <div class="bar-wrapper">
             <div id="hp-bar" class="bar-fill health" style="width: 100%;"></div>
@@ -831,7 +842,7 @@ html_template = """<!DOCTYPE html>
     <div id="pom-modal" class="modal-overlay">
       <div class="modal-box">
         <div class="modal-header">
-          <div style="font-size: 48px; margin-bottom: 8px;">🍑</div>
+          <div id="peach-modal-icon" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--peach-pink); box-shadow: 0 0 20px rgba(251, 113, 133, 0.8); margin: 0 auto 12px; background-size: 200%; background-position: 0 0;"></div>
           <div class="modal-title" style="color: var(--peach-pink);">HEAVENLY PEACH OF IMMORTALITY (天庭蟠桃)</div>
           <div class="modal-subtitle">Queen Mother's Celestial Orchard · 延年益寿 神通精进</div>
           <div class="modal-quote">"One bite adds 3,000 years of Dao cultivation! Choose an equipped boon to elevate its power level."</div>
@@ -948,13 +959,13 @@ html_template = """<!DOCTYPE html>
         const filter = this.ctx.createBiquadFilter();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(320, t);
+        osc.frequency.setValueAtTime(340, t);
         osc.frequency.exponentialRampToValueAtTime(140, t + 0.14);
 
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(800, t);
+        filter.frequency.setValueAtTime(900, t);
 
-        gain.gain.setValueAtTime(0.28, t);
+        gain.gain.setValueAtTime(0.3, t);
         gain.gain.linearRampToValueAtTime(0.01, t + 0.14);
 
         osc.connect(filter);
@@ -969,26 +980,24 @@ html_template = """<!DOCTYPE html>
       playStaffHit() {
         if (!this.ctx) return;
         const t = this.ctx.currentTime;
-        // Metal clang
         const osc1 = this.ctx.createOscillator();
         const gain1 = this.ctx.createGain();
         osc1.type = 'triangle';
-        osc1.frequency.setValueAtTime(580, t);
+        osc1.frequency.setValueAtTime(620, t);
         osc1.frequency.exponentialRampToValueAtTime(220, t + 0.18);
-        gain1.gain.setValueAtTime(0.4, t);
+        gain1.gain.setValueAtTime(0.45, t);
         gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
         osc1.connect(gain1);
         gain1.connect(this.ctx.destination);
         osc1.start(t);
         osc1.stop(t + 0.18);
 
-        // Low thump
         const osc2 = this.ctx.createOscillator();
         const gain2 = this.ctx.createGain();
         osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(130, t);
+        osc2.frequency.setValueAtTime(140, t);
         osc2.frequency.exponentialRampToValueAtTime(45, t + 0.22);
-        gain2.gain.setValueAtTime(0.5, t);
+        gain2.gain.setValueAtTime(0.55, t);
         gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
         osc2.connect(gain2);
         gain2.connect(this.ctx.destination);
@@ -1003,10 +1012,10 @@ html_template = """<!DOCTYPE html>
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(220, t);
+        osc.frequency.setValueAtTime(240, t);
         osc.frequency.exponentialRampToValueAtTime(30, t + 0.45);
 
-        gain.gain.setValueAtTime(0.6, t);
+        gain.gain.setValueAtTime(0.65, t);
         gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
 
         osc.connect(gain);
@@ -1027,7 +1036,7 @@ html_template = """<!DOCTYPE html>
           osc.frequency.setValueAtTime(freq, t);
           osc.frequency.exponentialRampToValueAtTime(freq * 0.96, t + 1.8);
 
-          gain.gain.setValueAtTime(0.25 / (idx + 1), t);
+          gain.gain.setValueAtTime(0.28 / (idx + 1), t);
           gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
 
           osc.connect(gain);
@@ -1041,14 +1050,14 @@ html_template = """<!DOCTYPE html>
       playJadeChime() {
         if (!this.ctx) return;
         const t = this.ctx.currentTime;
-        const freqs = [523.25, 659.25, 783.99, 1046.5]; // C major pentatonic
+        const freqs = [523.25, 659.25, 783.99, 1046.5];
         freqs.forEach((f, i) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(f, t + i * 0.06);
 
-          gain.gain.setValueAtTime(0.22, t + i * 0.06);
+          gain.gain.setValueAtTime(0.25, t + i * 0.06);
           gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 1.2);
 
           osc.connect(gain);
@@ -1071,7 +1080,7 @@ html_template = """<!DOCTYPE html>
         const noise = this.ctx.createBufferSource();
         noise.buffer = buffer;
         const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.4, t);
+        gain.gain.setValueAtTime(0.45, t);
         gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
         noise.connect(gain);
         gain.connect(this.ctx.destination);
@@ -1087,9 +1096,9 @@ html_template = """<!DOCTYPE html>
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, t);
+        osc.frequency.setValueAtTime(650, t);
         osc.frequency.exponentialRampToValueAtTime(180, t + 0.2);
-        gain.gain.setValueAtTime(0.25, t);
+        gain.gain.setValueAtTime(0.28, t);
         gain.gain.linearRampToValueAtTime(0.001, t + 0.2);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -1104,9 +1113,9 @@ html_template = """<!DOCTYPE html>
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(450, t);
+        osc.frequency.setValueAtTime(480, t);
         osc.frequency.exponentialRampToValueAtTime(70, t + 0.25);
-        gain.gain.setValueAtTime(0.45, t);
+        gain.gain.setValueAtTime(0.48, t);
         gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -1121,9 +1130,9 @@ html_template = """<!DOCTYPE html>
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(240, t);
+        osc.frequency.setValueAtTime(260, t);
         osc.frequency.linearRampToValueAtTime(100, t + 0.3);
-        gain.gain.setValueAtTime(0.35, t);
+        gain.gain.setValueAtTime(0.38, t);
         gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -1466,9 +1475,10 @@ html_template = """<!DOCTYPE html>
         this.y = 0;
         this.vx = 0;
         this.vy = 0;
-        this.radius = 24;
-        this.baseSpeed = 240;
-        this.speed = 240;
+        this.facing = 1; // 1 = right, -1 = left
+        this.radius = 26;
+        this.baseSpeed = 250;
+        this.speed = 250;
         this.hp = 100;
         this.maxHp = 100;
         this.qi = 50;
@@ -1615,6 +1625,14 @@ html_template = """<!DOCTYPE html>
           }
         }
 
+        // Mouse facing direction
+        const worldMouseX = gameState.mouse.x - canvas.width / 2 + this.x;
+        if (worldMouseX < this.x) {
+          this.facing = -1;
+        } else {
+          this.facing = 1;
+        }
+
         // Movement Input
         let moveX = 0;
         let moveY = 0;
@@ -1640,7 +1658,7 @@ html_template = """<!DOCTYPE html>
             x: this.x,
             y: this.y,
             alpha: 1.0,
-            radius: 20
+            radius: 24
           });
         } else {
           // Normal Movement
@@ -1721,16 +1739,16 @@ html_template = """<!DOCTYPE html>
         this.comboTimer = 0.6; // Combo reset window
 
         let baseDmg = 40;
-        let reach = 110;
-        let arc = Math.PI * 0.75;
+        let reach = 115;
+        let arc = Math.PI * 0.8;
 
         if (this.comboIndex === 2) {
           // 3rd Hit: Colossal Overhead Slam
-          baseDmg = 85;
-          reach = 145;
-          arc = Math.PI * 0.9;
+          baseDmg = 90;
+          reach = 150;
+          arc = Math.PI * 0.95;
           sound.playStaffSmash();
-          createScreenShake(6);
+          createScreenShake(7);
         } else {
           sound.playStaffHit();
         }
@@ -1768,12 +1786,12 @@ html_template = """<!DOCTYPE html>
               enemy.takeDamage(finalDmg, crit);
 
               // Knockback
-              const knock = (this.comboIndex === 2 ? 220 : 120);
+              const knock = (this.comboIndex === 2 ? 240 : 130);
               enemy.vx += Math.cos(angleToEnemy) * knock;
               enemy.vy += Math.sin(angleToEnemy) * knock;
 
               // Fill Awakening Gauge
-              this.awakenGauge = Math.min(this.maxAwakenGauge, this.awakenGauge + (crit ? 4 : 2));
+              this.awakenGauge = Math.min(this.maxAwakenGauge, this.awakenGauge + (crit ? 5 : 2.5));
             }
           }
         });
@@ -1801,7 +1819,7 @@ html_template = """<!DOCTYPE html>
           });
         } else if (id === 'laojun_strike') {
           sound.playFire();
-          fxList.push(new AnimatedFireExplosion(this.x + Math.cos(this.attackAngle)*80, this.y + Math.sin(this.attackAngle)*80, 70));
+          fxList.push(new AnimatedFireExplosion(this.x + Math.cos(this.attackAngle)*80, this.y + Math.sin(this.attackAngle)*80, 75));
         } else if (id === 'aoguang_strike') {
           fxList.push(new AnimatedWaterWave(this.x, this.y, this.attackAngle));
         } else if (id === 'change_strike') {
@@ -1826,8 +1844,8 @@ html_template = """<!DOCTYPE html>
         const worldMouseY = gameState.mouse.y - canvas.height / 2 + this.y;
         const angle = Math.atan2(worldMouseY - this.y, worldMouseX - this.x);
 
-        let baseDmg = 90;
-        let reach = 190;
+        let baseDmg = 95;
+        let reach = 200;
         if (this.boons.special) {
           const lvl = this.boons.special.level || 1;
           baseDmg *= (1 + 0.35 * (lvl - 1));
@@ -1842,8 +1860,8 @@ html_template = """<!DOCTYPE html>
           if (dist <= reach + enemy.radius) {
             enemy.takeDamage(baseDmg, true);
             const knockAngle = Math.atan2(enemy.y - this.y, enemy.x - this.x);
-            enemy.vx += Math.cos(knockAngle) * 320;
-            enemy.vy += Math.sin(knockAngle) * 320;
+            enemy.vx += Math.cos(knockAngle) * 340;
+            enemy.vy += Math.sin(knockAngle) * 340;
           }
         });
 
@@ -1870,13 +1888,13 @@ html_template = """<!DOCTYPE html>
         this.castActive = {
           x: worldMouseX,
           y: worldMouseY,
-          radius: 120,
+          radius: 125,
           duration: 6.0,
           tickTimer: 0,
           angle: 0
         };
 
-        fxList.push(new Shockwave(worldMouseX, worldMouseY, 120, '#a855f7'));
+        fxList.push(new Shockwave(worldMouseX, worldMouseY, 125, '#a855f7'));
       }
 
       triggerCastTick() {
@@ -1921,7 +1939,7 @@ html_template = """<!DOCTYPE html>
           moveY /= l;
         }
 
-        const dashSpeed = 680;
+        const dashSpeed = 700;
         this.vx = moveX * dashSpeed;
         this.vy = moveY * dashSpeed;
         this.x += this.vx * 0.22;
@@ -1945,8 +1963,8 @@ html_template = """<!DOCTYPE html>
         this.isAwakened = true;
         this.awakenDuration = 10.0;
         sound.playAwaken();
-        createScreenShake(14);
-        fxList.push(new Shockwave(this.x, this.y, 250, '#facc15'));
+        createScreenShake(15);
+        fxList.push(new Shockwave(this.x, this.y, 260, '#facc15'));
       }
 
       takeDamage(amount) {
@@ -1985,12 +2003,12 @@ html_template = """<!DOCTYPE html>
         ctx.save();
         ctx.translate(this.x, this.y);
 
-        // Draw Dash Trail
+        // Draw Dash Trail (Somersault Cloud Wisps)
         this.dashTrail.forEach(t => {
           ctx.save();
           ctx.beginPath();
           ctx.arc(t.x - this.x, t.y - this.y, t.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 245, 200, ${t.alpha * 0.4})`;
+          ctx.fillStyle = `rgba(255, 245, 200, ${t.alpha * 0.45})`;
           ctx.fill();
           ctx.restore();
         });
@@ -2005,20 +2023,19 @@ html_template = """<!DOCTYPE html>
           // Bagua / Runic Circle
           ctx.beginPath();
           ctx.arc(0, 0, this.castActive.radius, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(168, 85, 247, 0.8)';
+          ctx.strokeStyle = 'rgba(168, 85, 247, 0.85)';
           ctx.lineWidth = 3;
           ctx.stroke();
 
           ctx.beginPath();
           ctx.arc(0, 0, this.castActive.radius * 0.6, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(250, 204, 21, 0.6)';
+          ctx.strokeStyle = 'rgba(250, 204, 21, 0.7)';
           ctx.lineWidth = 2;
           ctx.stroke();
 
-          // Yin-yang center
           ctx.beginPath();
-          ctx.arc(0, 0, 18, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+          ctx.arc(0, 0, 20, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
           ctx.fill();
 
           ctx.restore();
@@ -2027,25 +2044,47 @@ html_template = """<!DOCTYPE html>
         // Draw Monkey King Body
         const heroImg = loadedImages['hero'];
         if (heroImg && heroImg.complete) {
-          let row = 0;
-          let col = 0;
+          // Sprite sheet is 8 cols x 7 rows
+          const cols = 8;
+          const rows = 7;
+          const cellW = 1024 / cols;
+          const cellH = 1024 / rows;
+
+          let r = 0;
+          let c = 0;
+
           if (this.isAwakened) {
-            row = 3;
-            col = Math.floor((Date.now() / 150) % 4);
+            r = 5; // Awakened row
+            c = Math.floor((Date.now() / 90) % 8);
           } else if (this.isDashing) {
-            row = 2;
-            col = Math.floor((Date.now() / 80) % 4);
+            r = 4; // Cloud dash row
+            c = Math.floor((Date.now() / 70) % 8);
           } else if (this.isAttacking) {
-            row = 1;
-            col = this.comboIndex;
+            if (this.comboIndex === 2) {
+              r = 3; // Smash row
+            } else {
+              r = 2; // Sweep swing row
+            }
+            c = Math.min(7, Math.floor((1 - this.attackDuration / this.attackMaxDuration) * 8));
+          } else if (Math.hypot(this.vx, this.vy) > 10) {
+            r = 1; // Walk row
+            c = Math.floor((Date.now() / 100) % 8);
           } else {
-            row = 0;
-            col = Math.floor((Date.now() / 200) % 4);
+            r = 0; // Idle row
+            c = Math.floor((Date.now() / 120) % 8);
           }
 
-          const scale = this.isAwakened ? 1.4 : 1.0;
-          const drawSize = 120 * scale;
-          ctx.drawImage(heroImg, col * 256, row * 256, 256, 256, -drawSize/2, -drawSize/2, drawSize, drawSize);
+          const scale = this.isAwakened ? 1.5 : 1.1;
+          const drawW = 96 * scale;
+          const drawH = 96 * scale;
+
+          ctx.save();
+          if (this.facing === -1) {
+            ctx.scale(-1, 1);
+          }
+
+          ctx.drawImage(heroImg, c * cellW, r * cellH, cellW, cellH, -drawW/2, -drawH/2 - 8, drawW, drawH);
+          ctx.restore();
         } else {
           // Fallback Procedural Draw
           ctx.beginPath();
@@ -2067,19 +2106,18 @@ html_template = """<!DOCTYPE html>
     // ENEMY & BOSS ENGINE
     // ==========================================
     const ENEMY_TYPES = {
-      demon_grunt: { name: 'Mountain Demon Grunt (小山妖)', maxHp: 65, speed: 110, radius: 24, color: '#16a34a', behavior: 'swarmer' },
-      ape_slinger: { name: 'Wild Ape Slinger (泼猴弓手)', maxHp: 50, speed: 130, radius: 22, color: '#d97706', behavior: 'shooter' },
-      nether_shade: { name: 'Nether Ghost (幽冥冤魂)', maxHp: 75, speed: 95, radius: 26, color: '#8b5cf6', behavior: 'ghost' },
-      hell_hound: { name: 'Diyu Hell Hound (地狱恶犬)', maxHp: 90, speed: 170, radius: 28, color: '#dc2626', behavior: 'charger' },
-      heavenly_soldier: { name: 'Heavenly Vanguard (天兵神将)', maxHp: 140, speed: 100, radius: 30, color: '#facc15', behavior: 'shield_soldier' },
-      daoist_golem: { name: 'Bagua Daoist Golem (八卦金甲傀儡)', maxHp: 220, speed: 65, radius: 38, color: '#78716c', behavior: 'smasher' },
+      demon_grunt: { name: 'Mountain Demon Ape (山妖猿)', maxHp: 70, speed: 115, radius: 26, color: '#d97706', spriteRow: 4, behavior: 'swarmer' },
+      ape_slinger: { name: 'Heavenly Archer (天弓兵)', maxHp: 55, speed: 130, radius: 24, color: '#38bdf8', spriteRow: 1, behavior: 'shooter' },
+      nether_shade: { name: 'Diyu Nether Ghost (地府幽灵)', maxHp: 80, speed: 100, radius: 26, color: '#10b981', spriteRow: 5, behavior: 'ghost' },
+      heavenly_soldier: { name: 'Heavenly Spear Guard (天庭神兵)', maxHp: 150, speed: 105, radius: 28, color: '#facc15', spriteRow: 0, behavior: 'shield_soldier' },
+      daoist_golem: { name: 'Bagua Daoist Automaton (八卦守卫)', maxHp: 240, speed: 70, radius: 36, color: '#d97706', spriteRow: 3, behavior: 'smasher' },
 
       // Bosses
-      boss_aoguang: { name: 'East Sea Dragon King Ao Guang (东海龙王·敖广)', isBoss: true, maxHp: 2800, speed: 115, radius: 64, color: '#0284c7', behavior: 'boss_aoguang' },
-      boss_yanluo: { name: 'King Yanluo & Judge Cui (幽冥阎罗王)', isBoss: true, maxHp: 5200, speed: 110, radius: 64, color: '#b91c1c', behavior: 'boss_yanluo' },
-      boss_nezha: { name: 'Third Lotus Prince Nezha (三太子哪吒)', isBoss: true, maxHp: 8400, speed: 160, radius: 58, color: '#ea580c', behavior: 'boss_nezha' },
-      boss_erlang: { name: 'Erlang Shen & Celestial Hound (二郎神杨戬与哮天犬)', isBoss: true, maxHp: 12500, speed: 145, radius: 65, color: '#ca8a04', behavior: 'boss_erlang' },
-      boss_jade_emperor: { name: 'Supreme Jade Emperor & Laozi Crucible (玉皇大帝与太上老君)', isBoss: true, maxHp: 24000, speed: 120, radius: 75, color: '#f59e0b', behavior: 'boss_final' }
+      boss_aoguang: { name: 'East Sea Dragon King Ao Guang (东海龙王·敖广)', isBoss: true, maxHp: 2900, speed: 120, radius: 64, color: '#0284c7', spriteRow: 2, behavior: 'boss_aoguang' },
+      boss_yanluo: { name: 'King Yanluo & Judge Cui (幽冥阎罗王)', isBoss: true, maxHp: 5400, speed: 110, radius: 64, color: '#b91c1c', spriteRow: 5, behavior: 'boss_yanluo' },
+      boss_nezha: { name: 'Third Lotus Prince Nezha (三太子哪吒)', isBoss: true, maxHp: 8600, speed: 165, radius: 58, color: '#ea580c', spriteRow: 1, behavior: 'boss_nezha' },
+      boss_erlang: { name: 'Erlang Shen & Celestial Hound (二郎神杨戬与哮天犬)', isBoss: true, maxHp: 12800, speed: 150, radius: 65, color: '#ca8a04', spriteRow: 2, behavior: 'boss_erlang' },
+      boss_jade_emperor: { name: 'Supreme Jade Emperor & Laozi Crucible (玉皇大帝与太上老君)', isBoss: true, maxHp: 25000, speed: 125, radius: 75, color: '#f59e0b', spriteRow: 2, behavior: 'boss_final' }
     };
 
     class Enemy {
@@ -2093,11 +2131,13 @@ html_template = """<!DOCTYPE html>
         this.speed = def.speed;
         this.radius = def.radius;
         this.color = def.color;
+        this.spriteRow = def.spriteRow || 0;
         this.behavior = def.behavior;
         this.x = x;
         this.y = y;
         this.vx = 0;
         this.vy = 0;
+        this.facing = 1;
         this.alive = true;
         this.attackTimer = 0;
         this.burnTimer = 0;
@@ -2152,7 +2192,7 @@ html_template = """<!DOCTYPE html>
 
         if (this.freezeTimer > 0) {
           this.freezeTimer -= dt;
-          return; // Frozen: cannot act or move
+          return;
         }
 
         let speedMod = 1.0;
@@ -2163,6 +2203,12 @@ html_template = """<!DOCTYPE html>
 
         const distToPlayer = Math.hypot(player.x - this.x, player.y - this.y);
         const angleToPlayer = Math.atan2(player.y - this.y, player.x - this.x);
+
+        if (player.x < this.x) {
+          this.facing = -1;
+        } else {
+          this.facing = 1;
+        }
 
         this.attackTimer += dt;
 
@@ -2180,7 +2226,6 @@ html_template = """<!DOCTYPE html>
           }
         } else if (this.behavior === 'shooter') {
           if (distToPlayer < 240) {
-            // Back up
             this.vx = -Math.cos(angleToPlayer) * this.speed * 0.8 * speedMod;
             this.vy = -Math.sin(angleToPlayer) * this.speed * 0.8 * speedMod;
           } else if (distToPlayer > 360) {
@@ -2193,7 +2238,7 @@ html_template = """<!DOCTYPE html>
 
           if (this.attackTimer >= 2.0) {
             this.attackTimer = 0;
-            projectiles.push(new Projectile(this.x, this.y, Math.cos(angleToPlayer)*260, Math.sin(angleToPlayer)*260, 15, '#f59e0b', true));
+            projectiles.push(new Projectile(this.x, this.y, Math.cos(angleToPlayer)*270, Math.sin(angleToPlayer)*270, 16, '#38bdf8', true));
           }
         } else if (this.isBoss) {
           // Boss Multi-attack Pattern
@@ -2202,7 +2247,6 @@ html_template = """<!DOCTYPE html>
 
           if (this.attackTimer >= 2.2) {
             this.attackTimer = 0;
-            // Radial bullet barrage
             const count = 8;
             for (let i = 0; i < count; i++) {
               const bAngle = angleToPlayer + (i * Math.PI * 2 / count);
@@ -2220,14 +2264,37 @@ html_template = """<!DOCTYPE html>
         ctx.save();
         ctx.translate(this.x, this.y);
 
-        // Body Circle
-        ctx.beginPath();
-        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        const enemyImg = loadedImages['monsters_beasts'];
+        if (enemyImg && enemyImg.complete) {
+          const cols = 6;
+          const rows = 6;
+          const cellW = 1024 / cols;
+          const cellH = 1024 / rows;
+
+          const r = this.spriteRow;
+          const c = Math.floor((Date.now() / 140) % 5);
+
+          const scale = this.isBoss ? 2.2 : 1.3;
+          const drawW = 72 * scale;
+          const drawH = 72 * scale;
+
+          ctx.save();
+          if (this.facing === -1) {
+            ctx.scale(-1, 1);
+          }
+
+          ctx.drawImage(enemyImg, c * cellW, r * cellH, cellW, cellH, -drawW/2, -drawH/2 - 6, drawW, drawH);
+          ctx.restore();
+        } else {
+          // Fallback Body Circle
+          ctx.beginPath();
+          ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
 
         // Status Effects Aura
         if (this.burnTimer > 0) {
@@ -2250,9 +2317,9 @@ html_template = """<!DOCTYPE html>
           const hpPct = Math.max(0, this.hp / this.maxHp);
           const barW = this.radius * 2;
           ctx.fillStyle = '#110e18';
-          ctx.fillRect(-barW/2, -this.radius - 12, barW, 6);
+          ctx.fillRect(-barW/2, -this.radius - 14, barW, 6);
           ctx.fillStyle = '#ef4444';
-          ctx.fillRect(-barW/2, -this.radius - 12, barW * hpPct, 6);
+          ctx.fillRect(-barW/2, -this.radius - 14, barW * hpPct, 6);
         }
 
         ctx.restore();
@@ -2273,7 +2340,7 @@ html_template = """<!DOCTYPE html>
         this.dmg = dmg;
         this.color = color;
         this.isEnemy = isEnemy;
-        this.radius = 8;
+        this.radius = 9;
         this.alive = true;
         this.life = 4.0;
       }
@@ -2307,7 +2374,7 @@ html_template = """<!DOCTYPE html>
         ctx.fillStyle = this.color;
         ctx.fill();
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 10;
         ctx.restore();
       }
     }
@@ -2369,7 +2436,7 @@ html_template = """<!DOCTYPE html>
         ctx.lineWidth = 14;
         ctx.globalAlpha = Math.max(0, this.alpha);
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 16;
         ctx.stroke();
         ctx.restore();
       }
@@ -2398,7 +2465,7 @@ html_template = """<!DOCTYPE html>
         ctx.lineWidth = 4;
         ctx.globalAlpha = Math.max(0, this.alpha);
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 14;
         ctx.stroke();
         ctx.restore();
       }
@@ -2526,7 +2593,7 @@ html_template = """<!DOCTYPE html>
         exitGates.push({
           x: gateX,
           y: gateY,
-          radius: 48,
+          radius: 52,
           rewardType: rewardType,
           godKey: godKey,
           label: label
@@ -2554,7 +2621,7 @@ html_template = """<!DOCTYPE html>
       } else if (index <= 60) {
         gameState.biome = 3;
         document.getElementById('chamber-name').innerText = `SOUTH HEAVEN GATE - CHAMBER ${index} / 100`;
-        document.getElementById('chamber-sub').innerText = '南天门灵霄宝境 · 天将御敌';
+        document.getElementById('chamber-sub').innerText = '南天门灵霄宝境 · 天兵守关';
       } else if (index <= 80) {
         gameState.biome = 4;
         document.getElementById('chamber-name').innerText = `PEACH ORCHARD & CRUCIBLE - CHAMBER ${index} / 100`;
@@ -2629,8 +2696,8 @@ html_template = """<!DOCTYPE html>
         const col = god.portraitIndex % 5;
         const row = Math.floor(god.portraitIndex / 5);
         portrait.style.backgroundImage = `url(${godSheet.src})`;
-        portrait.style.backgroundPosition = `-${col * 110}px -${row * 110}px`;
-        portrait.style.backgroundSize = `550px 220px`;
+        portrait.style.backgroundPosition = `-${col * 120}px -${row * 120}px`;
+        portrait.style.backgroundSize = `600px 240px`;
       }
 
       container.innerHTML = '';
@@ -2692,6 +2759,14 @@ html_template = """<!DOCTYPE html>
       const container = document.getElementById('pom-choices-container');
       container.innerHTML = '';
 
+      const peachIcon = document.getElementById('peach-modal-icon');
+      const rewImg = loadedImages['reward_icons'];
+      if (rewImg && rewImg.complete) {
+        peachIcon.style.backgroundImage = `url(${rewImg.src})`;
+        peachIcon.style.backgroundPosition = `0 0`;
+        peachIcon.style.backgroundSize = `200% 200%`;
+      }
+
       const equipped = [];
       if (player.boons.attack) equipped.push(player.boons.attack);
       if (player.boons.special) equipped.push(player.boons.special);
@@ -2700,7 +2775,6 @@ html_template = """<!DOCTYPE html>
       player.boons.passives.forEach(b => equipped.push(b));
 
       if (equipped.length === 0) {
-        // No boons to upgrade
         player.maxHp += 25;
         player.hp = Math.min(player.maxHp, player.hp + 25);
         gameState.peachesEaten++;
@@ -2768,7 +2842,7 @@ html_template = """<!DOCTYPE html>
             it.action();
             sound.playJadeChime();
             updateHUD();
-            openShopModal(); // Refresh
+            openShopModal();
           } else {
             alert('Not enough Jade Coins!');
           }
@@ -3000,21 +3074,19 @@ html_template = """<!DOCTYPE html>
 
       ctx.translate(canvas.width / 2 - player.x + shakeX, canvas.height / 2 - player.y + shakeY);
 
-      // 1. Draw Floor Tiles
+      // 1. Draw Floor Tiles (Heavenly Court / Tian Ting Jade Pavers)
       const floorImg = loadedImages['seamless_floor'];
       if (floorImg && floorImg.complete) {
-        const pattern = ctx.createPattern(floorImg, 'repeat');
-        ctx.fillStyle = pattern;
-        ctx.fillRect(-700, -700, 1400, 1400);
+        ctx.drawImage(floorImg, -700, -700, 1400, 1400);
       } else {
         ctx.fillStyle = '#140f20';
         ctx.fillRect(-700, -700, 1400, 1400);
       }
 
       // Chamber Boundary Border (Golden Chinese Gate Frame)
-      ctx.strokeStyle = '#e6b450';
-      ctx.lineWidth = 8;
-      ctx.strokeRect(-660, -660, 1320, 1320);
+      ctx.strokeStyle = 'rgba(230, 180, 80, 0.75)';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(-680, -680, 1360, 1360);
 
       // 2. Draw Exit Gates
       if (gameState.chamberCleared) {
@@ -3030,7 +3102,7 @@ html_template = """<!DOCTYPE html>
           ctx.strokeStyle = '#facc15';
           ctx.lineWidth = 4;
           ctx.shadowColor = '#facc15';
-          ctx.shadowBlur = 14;
+          ctx.shadowBlur = 16;
           ctx.stroke();
 
           // Gate Icon
@@ -3045,20 +3117,28 @@ html_template = """<!DOCTYPE html>
               const godsImg = loadedImages['all_10_gods'];
               if (godsImg && godsImg.complete) {
                 const gIndex = GODS[gate.godKey].portraitIndex;
-                ctx.drawImage(godsImg, (gIndex%5)*256, Math.floor(gIndex/5)*256, 256, 256, -32, -32, 64, 64);
+                const gCol = gIndex % 5;
+                const gRow = Math.floor(gIndex / 5);
+                const gW = godsImg.width / 5;
+                const gH = godsImg.height / 2;
+                ctx.drawImage(godsImg, gCol * gW, gRow * gH, gW, gH, -36, -36, 72, 72);
               }
             }
 
             if (gate.rewardType !== 'god') {
-              ctx.drawImage(rewImg, col*256, row*256, 256, 256, -32, -32, 64, 64);
+              const rW = rewImg.width / 2;
+              const rH = rewImg.height / 2;
+              ctx.drawImage(rewImg, col * rW, row * rH, rW, rH, -36, -36, 72, 72);
             }
           }
 
           // Gate Label
-          ctx.font = 'bold 12px Cinzel, serif';
+          ctx.font = 'bold 13px Cinzel, serif';
           ctx.fillStyle = '#fff2a8';
           ctx.textAlign = 'center';
-          ctx.fillText(gate.label, 0, -gate.radius - 10);
+          ctx.shadowColor = '#000';
+          ctx.shadowBlur = 6;
+          ctx.fillText(gate.label, 0, -gate.radius - 12);
 
           ctx.restore();
         });
@@ -3104,7 +3184,7 @@ final_html = html_template.replace('%ASSETS_JSON%', json.dumps(b64_data))
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(final_html)
 
-print("Successfully compiled index.html!")
+print("Successfully compiled index.html with all brand new custom Journey to the West assets!")
 ''')
 
-print(f"Successfully compiled Journey to the West index.html ({len(final_html)} bytes)!")
+print(f"Successfully compiled brand new index.html ({len(final_html)} bytes)!")
